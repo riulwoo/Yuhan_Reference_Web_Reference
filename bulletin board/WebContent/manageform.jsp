@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.sql.*"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,121 +11,289 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <link href="./css/manageform_css.css" type="text/css" rel="stylesheet">
 </head>
+<jsp:include page = "top.jsp" flush = "false"/>
 
-<!-- 네비바를 fixed-top으로 설정했을 때 컨텐츠와 겹치는 문제 방지 -->
-<body class="pt-5">
-
-	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="main.jsp">Reference</a>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item active"><a class="nav-link"
-						href="main.jsp">홈 <span class="sr-only">(current)</span>
-					</a></li>
-				</ul>
-			</div>
-		</div>
-	</nav>
+<br><br>
 
 	<form method="get" action=''>
 		<!-- 회원관리 게시판, 승인제, 승인불가 기능 -->
 		<div class="list">
-			<fieldset>
-				<legend align="center">회원관리</legend>
-				<div style="overflow: scroll;">
-					<table class="table">
-						<tr>
+			<fieldset >
+				<legend align="center">&nbsp;회원관리</legend>
+				<div height=200vh>
+				<form action = "week7.jsp" method="post" name="textform">
+				<div style="overflow-y:auto; width:800px; height:200px; display:block">
+					<table class="table text-center">
+						<tr height=20px;>
 							<th>선택</th>
 							<th>No.</th>
+							<th>학번</th>
 							<th>이름</th>
-							<th>성별</th>
-							<th>작성일</th>
+							<th>ID</th>
+							<th>가입신청날짜</th>
 						</tr>
-						<tr>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
+							<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
+						
+						<!-- DB에서 subcheck가 X인 사람들만 검색하여 리스트 작성 -->
+						<!-- No. 는 for문에서 사용되는 변수를 이용 -->
+						<%
+						// DB에서 id에 맞는 정보들을 가져온 값
+						String StdID = null; // 학번
+						String ID = null; // 아이디
+						String Name = null; // 이름
+						String signcheck = null;
+						String date = null; // 가입 신청 날짜
+						int i = 1;
+
+						//DB연결
+						Connection conn = null;
+						PreparedStatement pstmt = null;
+						try {
+							String jdbcUrl = "jdbc:mysql://localhost:3306/web_ref_db?useUnicode=yes&characterEncoding=UTF8";
+							String dbId = "admin";
+							String dbPass = "password";
+							Class.forName("com.mysql.jdbc.Driver");
+							conn = DriverManager.getConnection(jdbcUrl, dbId, dbPass);
+
+							// SQL문으로 DB내에서 로그인하려는 ID와 PW 이름 검색
+							String sql = "select stdid, name, id, sign_date from member where signcheck = 'X'";
+							pstmt = conn.prepareStatement(sql);
+							ResultSet result = pstmt.executeQuery();
+
+							// 결과 레코드 하나씩마다 ID PW 이름 변수에 입력
+							while (result.next()) {
+								StdID = result.getString("stdid");
+								ID = result.getString("id");
+								Name = result.getString("name");
+								date = result.getString("sign_date");
+						%>
+						<tr height=30px>
 							<td><input type="checkbox"></td>
-							<td>1</td>
-							<td>아무개</td>
-							<td>여</td>
-							<td>20xx-xx-xx</td>
+							<td><%=i%></td>
+							<td><%=StdID%></td>
+							<td><%=Name%></td>
+							<td><%=ID%></td>
+							<td><%=date%></td>
 						</tr>
-						<tr>
-							<td><input type="checkbox">
-							<td>2</td>
-							<td>홍길노</td>
-							<td>남</td>
-							<td>20xx-xx-xx</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox">
-							<td>3</td>
-							<td>홍길량</td>
-							<td>여</td>
-							<td>20xx-xx-xx</td>
-						</tr>
+						<%
+						i++;
+						}
 
+						// 에러 처리
+						} catch (SQLException ex) {
+						ex.printStackTrace();
+						} finally {
+						if (pstmt != null)
+						try {
+							pstmt.close();
+						} catch (SQLException sqle) {
+						}
 
+						if (conn != null)
+						try {
+							conn.close();
+						} catch (SQLException sqle) {
+						}
+						}
+						%>
+						
+						<tr>
+						</tr>
 					</table>
 				</div>
 			</fieldset>
 		</div>
 
 		<br>
-		<button type="button" class="mem_ok" value="승인">승인</button>
-		<button type="button" class="mem_no" value="거절">거절</button>
-
+		<div style="display: flex; justify-content: center; align-items: center;">
+			<button type="button" class="mem_ok" value="승인" onclick="location.href = 'memok.jsp'">승인</button>
+			<button type="button" class="mem_no" value="거절" onclick="location.href = 'memno.jsp'">거절</button>
+		</div>
 		<hr>
 
 		<!-- 게시판 내 글 삭제 및 기타 기능 추가 -->
 		<div class="list">
 			<fieldset>
-				<legend>게시판 관리</legend>
-				<div style="overflow: scroll;">
-					<table class="table">
-						<tr>
+				<legend>&nbsp;게시판 관리</legend>
+				<div style="overflow-y:auto; width:800px; height:200px; display:block"> 
+					<table class="table text-center">
+						<tr height=20px;>
 							<th>선택</th>
 							<th>No.</th>
 							<th>게시판 종류</th>
+							<th>제목</th>
 							<th>작성자</th>
 							<th>작성일</th>
 						</tr>
+						<%
+						String b_num = null; //게시글 번호
+						String b_type = null; //게시판 종류
+						String b_title = null; //제목
+						String b_writer = null; //작성자
+						String b_date = null; //작성일
+						
+						//DB연결
+						Connection conn_b = null;
+						PreparedStatement pstmt_b = null;
+						ResultSet rs = null;
+						try {
+							String jdbcUrl = "jdbc:mysql://localhost:3306/web_ref_db?useUnicode=yes&characterEncoding=UTF8";
+							String dbId = "admin";
+							String dbPass = "password";
+							Class.forName("com.mysql.jdbc.Driver");
+							conn_b = DriverManager.getConnection(jdbcUrl, dbId, dbPass);
+							
+							//sql문으로 db에 번호, 제목, 작성자, 종류, 날짜 검색
+							String sql = "select boardid, title, boardtype, writer, wrdate from board order by boardid desc limit 5";
+							pstmt_b = conn_b.prepareStatement(sql);
+							rs = pstmt_b.executeQuery();
+							%>
+							<form action="delete.jsp" method="post">
+							<input type="hidden" name="check" value="1">
+							<%
+							//각각의 결과 레코드를 변수에 입력
+							while(rs.next()){
+								b_num = rs.getString("boardid");
+								b_title = rs.getString("title");
+								b_type = rs.getString("boardtype");
+								b_writer = rs.getString("writer");
+								b_date = rs.getString("wrdate");
+								%>
+								<tr height=30px>
+								<td><input type="checkbox" name="chk" value="<%=b_num%>"></td>
+								<td><%=b_num%></td>
+								<td><%=b_type%></td>
+								<td><a href="modify.jsp?id=<%=b_num%>&type=<%=b_type%>"><%=b_title%></a></td>
+								<td><%=b_writer%></td>
+								<td><%=b_date%></td>
+							</tr>
+							<%
+							}
+					    }catch(SQLException ex){
+					    	ex.printStackTrace();
+					    } finally {
+							if (pstmt != null)
+							try {
+								pstmt.close();
+							} catch (SQLException sqle) {
+							}
+
+							if (conn != null)
+							try {
+								conn.close();
+							} catch (SQLException sqle) {
+							}
+							}
+						%>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
 						<tr>
-							<td><input type="checkbox"></td>
-							<td>1</td>
-							<td>웹/앱</td>
-							<td>관리자</td>
-							<td>20xx-xx-xx</td>
-						</tr>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
 						<tr>
-							<td><input type="checkbox">
-							<td>2</td>
-							<td>게임</td>
-							<td>관리자</td>
-							<td>20xx-xx-xx</td>
-						</tr>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
 						<tr>
-							<td><input type="checkbox">
-							<td>3</td>
-							<td>네트워크</td>
-							<td>관리자</td>
-							<td>20xx-xx-xx</td>
-						</tr>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
 						<tr>
-							<td><input type="checkbox">
-							<td>4</td>
-							<td>인공지능</td>
-							<td>관리자</td>
-							<td>20xx-xx-xx</td>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
+						<tr>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
+						<tr>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
+							<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
+						<tr>
+						<tr height=30px>
+								<td><input type="checkbox"></td>
+								<td>1</td>
+								<td>2</td>
+								<td>2</td>
+								<td>3</td>
+								<td>3</td>
+							</tr>
+						<tr>
+						<tr>
 						</tr>
+						
+						</form>
 					</table>
 				</div>
 			</fieldset>
 		</div>
 
 		<br>
-		<button type="button" class="mem_ok" value="게시글 삭제">게시글 삭제</button>
-		<button type="button" class="mem_no" value="게시글 보기">게시글 보기</button>
+		<div style="display: flex; justify-content: center; align-items: center;">
+			<button type="submit" class="board_delete" value="게시글 삭제">게시글 삭제</button>
+			<button type="button" class="board_watch" value="게시글 보기">게시글 보기</button>
+		</div>
 	</form>
 
 </body>

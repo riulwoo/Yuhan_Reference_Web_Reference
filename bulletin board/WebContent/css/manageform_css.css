@@ -1,11 +1,20 @@
+/* AI.jsp 에서 사용하는 css */
 .table {
+	
 	border-collapse: collapse;
 	border-top: 3px solid #343A40;
 	height: 300px;
+	padding: 50px;
+	table-layout: fixed;
+	
+}
+.scroll {
+	display: block;
+	overflow: auto;
 }
 
-.pop{
-	cursor:pointer;
+.pop {
+	cursor: pointer;
 }
 
 .table th {
@@ -31,7 +40,7 @@
 	text-align: center;
 }
 
-button {
+.mem_ok, .mem_no, .board_watch, .board_delete {
 	border: 1.5px solid #343A40;
 	width: 150px;
 	margin: 10px;
@@ -44,6 +53,10 @@ button {
 
 form {
 	margin: 10px;
+	width: 60%;
+	display: table;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 fieldset {
