@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<% request.setCharacterEncoding("UTF-8"); %>
     <%@ page import = "java.sql.*" %>
     <%@ page import = "java.util.*" %>
 <!DOCTYPE html>
@@ -11,8 +12,8 @@
 <body>
 <%
 //boardwrite.jsp에서 POST로 받아온 값
-String kind = request.getParameter("kind");
 String title = request.getParameter("title");
+String kind = request.getParameter("kind");
 String content = request.getParameter("content");
 String name = (String)session.getAttribute("Name");
 Timestamp register = new Timestamp(System.currentTimeMillis());
@@ -23,6 +24,12 @@ if(check == null)
 else
 	id = Integer.parseInt(request.getParameter("id"));
 
+//관리자로 접속 시 name = manager
+if(name == null)
+	name = "manager";
+
+%>
+<%
 //DB연결
 Connection conn = null;
 PreparedStatement pstmt = null;
@@ -36,6 +43,7 @@ try{
 	conn = DriverManager.getConnection(jdbcUrl, dbId, dbPass);
 	
 	if(check==null){
+		
 	//SQL문으로 게시글 내용 및 날짜 등 DB에 입력
 	String sql = "insert into board(title,boardtype,writer,wrdate,wrcontent) values(?,?,?,?,?)";
 	pstmt = conn.prepareStatement(sql);

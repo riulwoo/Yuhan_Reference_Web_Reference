@@ -15,16 +15,14 @@
 
 <br><br>
 
-	<form method="get" action=''>
 		<!-- 회원관리 게시판, 승인제, 승인불가 기능 -->
+		<form method="post" name="textform">
 		<div class="list">
 			<fieldset >
 				<legend align="center">&nbsp;회원관리</legend>
-				<div height=200vh>
-				<form action = "week7.jsp" method="post" name="textform">
 				<div style="overflow-y:auto; width:800px; height:200px; display:block">
 					<table class="table text-center">
-						<tr height=20px;>
+						<tr class ="sticky" height=20px;>
 							<th>선택</th>
 							<th>No.</th>
 							<th>학번</th>
@@ -32,24 +30,7 @@
 							<th>ID</th>
 							<th>가입신청날짜</th>
 						</tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-							<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						
-						<!-- DB에서 subcheck가 X인 사람들만 검색하여 리스트 작성 -->
+						<!-- DB에서 signcheck가 X인 사람들만 검색하여 리스트 작성 -->
 						<!-- No. 는 for문에서 사용되는 변수를 이용 -->
 						<%
 						// DB에서 id에 맞는 정보들을 가져온 값
@@ -74,7 +55,9 @@
 							String sql = "select stdid, name, id, sign_date from member where signcheck = 'X'";
 							pstmt = conn.prepareStatement(sql);
 							ResultSet result = pstmt.executeQuery();
-
+						%>
+							<input type="hidden" name="ck" value="1">
+						<%
 							// 결과 레코드 하나씩마다 ID PW 이름 변수에 입력
 							while (result.next()) {
 								StdID = result.getString("stdid");
@@ -82,8 +65,9 @@
 								Name = result.getString("name");
 								date = result.getString("sign_date");
 						%>
+						
 						<tr height=30px>
-							<td><input type="checkbox"></td>
+							<td><input type="checkbox" name="memck" value="<%=ID%>"></td>
 							<td><%=i%></td>
 							<td><%=StdID%></td>
 							<td><%=Name%></td>
@@ -121,12 +105,14 @@
 
 		<br>
 		<div style="display: flex; justify-content: center; align-items: center;">
-			<button type="button" class="mem_ok" value="승인" onclick="location.href = 'memok.jsp'">승인</button>
-			<button type="button" class="mem_no" value="거절" onclick="location.href = 'memno.jsp'">거절</button>
+			<button type="submit" class="mem_ok" value="승인" onclick="javascript: form.action='memok.jsp';">승인</button>
+			<button type="submit" class="mem_no" value="거절" onclick="javascript: form.action='memno.jsp';">거절</button>
 		</div>
+		</form>
 		<hr>
 
 		<!-- 게시판 내 글 삭제 및 기타 기능 추가 -->
+		<form action="delete.jsp" method="post">
 		<div class="list">
 			<fieldset>
 				<legend>&nbsp;게시판 관리</legend>
@@ -163,7 +149,7 @@
 							pstmt_b = conn_b.prepareStatement(sql);
 							rs = pstmt_b.executeQuery();
 							%>
-							<form action="delete.jsp" method="post">
+							
 							<input type="hidden" name="check" value="1">
 							<%
 							//각각의 결과 레코드를 변수에 입력
@@ -175,13 +161,13 @@
 								b_date = rs.getString("wrdate");
 								%>
 								<tr height=30px>
-								<td><input type="checkbox" name="chk" value="<%=b_num%>"></td>
-								<td><%=b_num%></td>
-								<td><%=b_type%></td>
-								<td><a href="modify.jsp?id=<%=b_num%>&type=<%=b_type%>"><%=b_title%></a></td>
-								<td><%=b_writer%></td>
-								<td><%=b_date%></td>
-							</tr>
+									<td><input type="checkbox" name="chk" value="<%=b_num%>"></td>
+									<td><%=b_num%></td>
+									<td><%=b_type%></td>
+									<td><a href="modify.jsp?id=<%=b_num%>&type=<%=b_type%>"><%=b_title%></a></td>
+									<td><%=b_writer%></td>
+									<td><%=b_date%></td>
+								</tr>
 							<%
 							}
 					    }catch(SQLException ex){
@@ -200,90 +186,8 @@
 							}
 							}
 						%>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-							<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
-						<tr height=30px>
-								<td><input type="checkbox"></td>
-								<td>1</td>
-								<td>2</td>
-								<td>2</td>
-								<td>3</td>
-								<td>3</td>
-							</tr>
-						<tr>
 						<tr>
 						</tr>
-						
-						</form>
 					</table>
 				</div>
 			</fieldset>
@@ -292,7 +196,6 @@
 		<br>
 		<div style="display: flex; justify-content: center; align-items: center;">
 			<button type="submit" class="board_delete" value="게시글 삭제">게시글 삭제</button>
-			<button type="button" class="board_watch" value="게시글 보기">게시글 보기</button>
 		</div>
 	</form>
 

@@ -1,19 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<% request.setCharacterEncoding("UTF-8"); %>
 <!DOCTYPE html>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="css/category.css" />
+<link href="css/table.css" type="text/css" rel = "stylesheet">
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 
 	<div class="col-lg-3">
-        <ui class="mainMenu">
-        
+
+        <ul class="mainMenu">
         	 <li class="item">
-                <a href="bignotice.jsp" class="btnC"><i class="fas fa-sign-out-alt"></i>공지사항</a>
+                <a href="AI.jsp?kind=notice" class="btnC"><i class="fas fa-sign-out-alt"></i>공지사항</a>
             </li>
         
         	 <li class="item" id="about">
@@ -32,13 +34,7 @@
                     <a href="AI.jsp?kind=net">네트워크</a>
                 </div>
             </li>
-           
-           
-           
-        </ui>
+        </ul>
     </div>
-
-		
-			<div class="col-lg-9 my-4 mb-4">
 </body>
 </html>
