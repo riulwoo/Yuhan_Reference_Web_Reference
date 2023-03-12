@@ -17,7 +17,7 @@
 주제 : 동아리 웹 페이지  
 
 ## SKILL
-HTML CSS Javascript / JSP MySQL
+HTML CSS Javascript / JSP MySQL Apache Tomcat
 
 ## 기능
   - 로그인 / 회원가입
